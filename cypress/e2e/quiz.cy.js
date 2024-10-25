@@ -6,137 +6,78 @@ describe('Tech Quiz End-to-End Tests', () => {
             statusCode: 200,
             body: [
                 {
-                    question: "Scenario 1: True/False",
+                    question: 'Scenario 1: Multiple Choice - Single Correct',
                     answers: [
                         { text: "Correct Answer", isCorrect: true },
-                        { text: "Incorrect Answer", isCorrect: false }
+                        { text: "Incorrect Answer 1", isCorrect: false },
+                        { text: "Incorrect Answer 2", isCorrect: false },
+                        { text: "Incorrect Answer 3", isCorrect: false }
                     ]
                 },
                 {
-                    question: 'Scenario 2: True/True',
+                    question: 'Scenario 2: Multiple Choice - Single Correct',
                     answers: [
+                        { text: 'Incorrect Answer 1', isCorrect: false },
                         { text: 'Correct Answer', isCorrect: true },
-                        { text: 'Correct Answer', isCorrect: true }
+                        { text: 'Incorrect Answer 2', isCorrect: false },
+                        { text: 'Incorrect Answer 3', isCorrect: false }
                     ]
                 },
                 {
-                    question: 'Scenario 3: False/False',
+                    question: 'Scenario 3: Multiple Choice - Single Correct',
                     answers: [
-                        { text: 'Incorrect Answer', isCorrect: false },
-                        { text: 'Incorrect Answer', isCorrect: false }
+                        { text: 'Incorrect Answer 1', isCorrect: false },
+                        { text: 'Correct Answer', isCorrect: false },
+                        { text: 'Incorrect Answer 2', isCorrect: true },
+                        { text: 'Incorrect Answer 3', isCorrect: false }
                     ]
                 },
                 {
-                    question: 'Scenario 4: Multiple Choice - Multiple Correct',
+                    question: 'Scenario 4: Multiple Choice - Single Correct',
                     answers: [
-                        { text: 'Choice A', isCorrect: true },
-                        { text: 'Choice B', isCorrect: true },
-                        { text: 'Choice C', isCorrect: false },
-                        { text: 'Choice D', isCorrect: false }
-                    ]
-                },
-                {
-                    question: 'Scenario 5: Multiple Choice - Single Correct',
-                    answers: [
-                        { text: 'Choice A', isCorrect: false },
-                        { text: 'Choice B', isCorrect: true },
-                        { text: 'Choice C', isCorrect: false },
-                        { text: 'Choice D', isCorrect: false }
-                    ]
-                },
-                {
-                    question: 'Scenario 6: True/False - Additional',
-                    answers: [
-                        { text: 'Correct Answer', isCorrect: true },
-                        { text: 'Incorrect Answer', isCorrect: false }
-                    ]
-                },
-                {
-                    question: 'Scenario 7: True/True - Additional',
-                    answers: [
-                        { text: 'Correct Answer', isCorrect: true },
-                        { text: 'Correct Answer', isCorrect: true }
-                    ]
-                },
-                {
-                    question: 'Scenario 8: False/False - Additional',
-                    answers: [
-                        { text: 'Incorrect Answer', isCorrect: false },
-                        { text: 'Incorrect Answer', isCorrect: false }
-                    ]
-                },
-                {
-                    question: 'Scenario 9: Multiple Choice - Multiple Correct - Additional',
-                    answers: [
-                        { text: 'Choice A', isCorrect: true },
-                        { text: 'Choice B', isCorrect: true },
-                        { text: 'Choice C', isCorrect: false },
-                        { text: 'Choice D', isCorrect: false }
-                    ]
-                },
-                {
-                    question: 'Scenario 10: Multiple Choice - Single Correct - Additional',
-                    answers: [
-                        { text: 'Choice A', isCorrect: false },
-                        { text: 'Choice B', isCorrect: true },
-                        { text: 'Choice C', isCorrect: false },
-                        { text: 'Choice D', isCorrect: false }
+                        { text: 'Incorrect Answer 1', isCorrect: false },
+                        { text: 'Correct Answer', isCorrect: false },
+                        { text: 'Incorrect Answer 2', isCorrect: false },
+                        { text: 'Incorrect Answer 3', isCorrect: true }
                     ]
                 }
             ]
-            
+                         
         }).as('getQuestions');
 
         cy.visit('/');
     });
 
     it('should allow a user to start the quiz', () => {
-        cy.wait('@getQuestions');
         
-
         cy.get('button').contains('Start Quiz').click();
-        cy.get('h2').should('contain', 'Scenario 1: True/False');
+
+        cy.wait('@getQuestions');
+
+        cy.get('h2').should('contain', 'Scenario 1: Multiple Choice - Single Correct');
       });
     
       it('should navigate through the quiz and display the final score', () => {
-        cy.wait('@getQuestions');
-
         cy.get('button').contains('Start Quiz').click();
 
+        cy.wait('@getQuestions');
 
-        cy.get('button').contains('Correct Answer').click(); // Q1 - True/False
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Correct Answer 1').click(); // Q2 - True/True
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Incorrect Answer 1').click(); // Q3 - False/False
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Choice A').click(); // Q4 - Multiple Correct
-        cy.get('button').contains('Choice B').click();
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Correct Choice').click(); // Q5 - Single Correct
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Answer 1').click(); // Q6 - True/False Additional
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Answer A').click(); // Q7 - True/True Additional
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Wrong 1').click(); // Q8 - False/False Additional
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Option 2').click(); // Q9 - Mixed Multiple Choice
-        cy.get('button').contains('Option 4').click();
-        cy.get('button').contains('Next').click();
-    
-        cy.get('button').contains('Only Correct Answer').click(); // Q10 - Single Correct 
-        cy.get('button').contains('Next').click();
-    
+        const clickButtonByIndex = (index) => {
+            cy.get('button').contains(index + 1).click();
+        };
 
-        cy.get('.alert-success').should('contain', 'Your score: X/10'); 
-      });
+        clickButtonByIndex(0); 
+        cy.wait('@getQuestions');
+
+        clickButtonByIndex(1);
+        cy.wait('@getQuestions');
+
+        clickButtonByIndex(2); 
+        cy.wait('@getQuestions');
+
+        clickButtonByIndex(3); 
+        cy.wait('@getQuestions');
+
+        cy.get('.alert-success').should('contain', 'Your score: 4/4');
     });
+});
