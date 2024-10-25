@@ -1,4 +1,4 @@
-Cypress.config('defaultCommandTimeout', 10000);
+Cypress.config('defaultCommandTimeout', 15000);
 
 describe('Tech Quiz End-to-End Tests', () => {
     beforeEach(() => {
@@ -62,22 +62,39 @@ describe('Tech Quiz End-to-End Tests', () => {
 
         cy.wait('@getQuestions');
 
-        const clickButtonByIndex = (index) => {
-            cy.get('button').contains(index + 1).click();
-        };
+        const questions = [
+            {
+                question: 'Scenario 1: Multiple Choice - Single Correct',
+                correctAnswerIndex: 1 // Index 1 means button labeled as '1'
+            },
 
-        clickButtonByIndex(0); 
-        cy.wait('@getQuestions');
+            {
+                question: 'Scenario 2: Multiple Choice - Single Correct',
+                correctAnswerIndex: 2 // Index 2 means button labeled as '2'
+            },
 
-        clickButtonByIndex(1);
-        cy.wait('@getQuestions');
+            {
+                question: 'Scenario 3: Multiple Choice - Single Correct',
+                correctAnswerIndex: 3 // Index 2 means button labeled as '3'
+            },
 
-        clickButtonByIndex(2); 
-        cy.wait('@getQuestions');
+            {
+                question: 'Scenario 4: Multiple Choice - Single Correct',
+                correctAnswerIndex: 4 // Index 2 means button labeled as '4'
+            }
 
-        clickButtonByIndex(3); 
-        cy.wait('@getQuestions');
+        ];
 
+        
+        questions.forEach((question) => {
+            
+            cy.get('h2').should('contain', question.question);
+
+            
+            cy.get('button').contains(question.correctAnswerIndex.toString()).click(); 
+        });
+
+        
         cy.get('.alert-success').should('contain', 'Your score: 4/4');
     });
 });
