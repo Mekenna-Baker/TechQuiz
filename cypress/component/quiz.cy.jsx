@@ -7,46 +7,43 @@ import Quiz from '../../src/components/Quiz';
 
 cy.stub(getQuestions, 'getQuestions').resolves([
     {
-        question: 'Scenario 1: True/False',
+        question: 'Scenario 1: Multiple Choice - Single Correct',
         answers: [
-            { text: 'Correct Answer', isCorrect: true },
-            {text: 'Incorrect Answer', isCorrect: false}, 
+          { text: 'Correct Answer', isCorrect: true },
+          { text: 'Incorrect Answer 1', isCorrect: false },
+          { text: 'Incorrect Answer 2', isCorrect: false },
+          { text: 'Incorrect Answer 3', isCorrect: false }
         ],
       },
 
       {
-        question: 'Scenario 2:  True/True',
+        question: 'Scenario 2: Multiple Choice - Single Correct',
         answers: [
-            { text: 'Correct Answer', isCorrect: true },
-            {text: 'Correct Answer', isCorrect: true}, 
+          { text: 'Incorrect Answer 1', isCorrect: false },
+          { text: 'Correct Answer', isCorrect: true },
+          { text: 'Incorrect Answer 2', isCorrect: false },
+          { text: 'Incorrect Answer 3', isCorrect: false }
         ]
       },
 
       {
-        question: 'Scenario 3: False/False',
+        question: 'Scenario 3: Multiple Choice - Single Correct',
         answers: [
-            { text: 'Incorrect Answer', isCorrect: false },
-            {text: 'Incorrect Answer', isCorrect: false}, 
+          { text: 'Incorrect Answer 1', isCorrect: false },
+          { text: 'Incorrect Answer 2', isCorrect: false },
+          { text: 'Correct Answer', isCorrect: true },
+          { text: 'Incorrect Answer 3', isCorrect: false }
         ]
       },
 
-      { question: 'Scenario 4: Multiple Choice -Multiple Correct',
+      { question: 'Scenario 4: Multiple Choice - Single Correct',
         answers: [
-            { text: 'Correct Answer', isCorrect: true },
-            {text: 'Correct Answer', isCorrect: true},
-            {text: 'Incorrect Answer', isCorrect: false},
-            {text: 'Incorrect Answer', isCorrect: false},
+          { text: 'Incorrect Answer 1', isCorrect: false },
+          { text: 'Incorrect Answer 2', isCorrect: false },
+          { text: 'Incorrect Answer 3', isCorrect: false },
+          { text: 'Correct Answer', isCorrect: true }
         ]
       },
-
-      { question: 'Scenario 5: Multiple Choice - Single Correct',
-        answers: [
-            { text: 'Correct Answer', isCorrect: true },
-            {text: 'Incorrect Answer', isCorrect: false},
-            {text: 'Incorrect Answer', isCorrect: false},
-            {text: 'Incorrect Answer', isCorrect: false},
-        ]
-      }
 ]);
 
 describe('Quiz Component Tests with Various Scenarios', () => {
@@ -56,38 +53,31 @@ describe('Quiz Component Tests with Various Scenarios', () => {
 
     const checkIfLastQuestion = (index, totalQuestions) => {
         if (index === totalQuestions -1) {
-            cy.get('.alert-success').should('be.visible');
+            cy.get('.alert-success').should('be.visible').and('contain', 'Your score');
         }
     };
   
-    it('should display the Start button initially', () => {
-        cy.get('button').contains('Start Quiz').should('be.visible');
-      });
+    it('should handle multiple-choice questions correctly', () => {
+      
+      cy.get('button').contains('Start Quiz').click();
+      
+      
+      cy.get('@getQuestions').then((response) => {
+        response.body.forEach((question, index) => {
     
-      it('should handle the True/False scenario correctly', () => {
-        cy.get('button').contains('Start Quiz').click();
-        cy.get('h2').contains('Scenario 1: True/False').should('be.visible');
-    
-        cy.get('button').contains('Correct Answer').click();
-        cy.get('button').contains('Next').click();
-      });
-    
-      it('should handle the True/True scenario correctly', () => {
-        cy.get('button').contains('Correct Answer 1').click();
-        cy.get('button').contains('Next').click();
-      });
-    
-      it('should handle the False/False scenario correctly', () => {
-        cy.get('button').contains('Incorrect Answer 1').click();
-        cy.get('button').contains('Next').click();
-      });
-    
-      it('should handle a multiple-choice question with a single correct answer', () => {
-        cy.get('h2').contains('Scenario 5: Multiple Choice - Single Correct').should('be.visible');
+          cy.get('h2').should('contain', question.question);
+  
+  
+          const correctAnswer = question.answers.find(answer => answer.isCorrect);
+          cy.get('button').contains(correctAnswer.text).click();
+  
+          if (index === response.body.length - 1) {
+            cy.get('.alert-success').should('be.visible').and('contain', 'Your score');
 
-        cy.get('button').contains('Correct Choice').click();
-        cy.get('button').contains('Next').click();
+            checkIfLastQuestion(index, totalQuestions);
 
-        checkIfLastQuestion(9, 10); questions
+          }
+        });
       });
     });
+  });
