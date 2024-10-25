@@ -3,6 +3,8 @@ import { mount } from '@cypress/react';
 import { getQuestions } from '../../client/src/services/questionApi';
 import Quiz from '../../src/components/Quiz';
 
+
+
 cy.stub(getQuestions, 'getQuestions').resolves([
     {
         question: 'Scenario 1: True/False',

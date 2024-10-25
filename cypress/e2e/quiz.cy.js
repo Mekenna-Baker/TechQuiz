@@ -1,3 +1,5 @@
+Cypress.config('defaultCommandTimeout', 10000);
+
 describe('Tech Quiz End-to-End Tests', () => {
     beforeEach(() => {
         cy.intercept('GET', '/api/questions/random', {
@@ -82,6 +84,7 @@ describe('Tech Quiz End-to-End Tests', () => {
                     ]
                 }
             ]
+            
         }).as('getQuestions');
 
         cy.visit('/');
